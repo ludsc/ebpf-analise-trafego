@@ -4,7 +4,7 @@ import time
 import sys
 
 # Defina sua interface de rede aqui (ex: eth0, ens33)
-device = "eth0" 
+device = "ens33"
 
 # Código C que roda no Kernel (eBPF)
 prog = """
