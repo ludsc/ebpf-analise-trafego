@@ -1,9 +1,5 @@
 # ebpf-analise-trafego
-# eBPF vs Iptables Benchmark
-
-# Benchmark: Iptables vs eBPF (XDP)
-
-Laboratório para comparar o consumo de CPU (`softirq`) sob ataques de negação de serviço (DoS) em ambiente virtualizado.
+Laboratório para comparar o consumo de CPU sob ataques de negação de serviço (DoS) em ambiente virtualizado.
 
 ## 1. Setup do Ambiente
 ```bash
