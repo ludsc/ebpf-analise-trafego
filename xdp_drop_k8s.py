@@ -2,7 +2,7 @@
 from bcc import BPF
 import time
 
-device = "ens33" # Sua interface física
+device = "ens33" # Confirme se sua interface é essa mesmo com 'ip a'
 
 prog = """
 #include <uapi/linux/bpf.h>
@@ -22,10 +22,12 @@ int xdp_drop_nodeport(struct xdp_md *ctx) {
             if (ip->protocol == IPPROTO_TCP) {
                 struct tcphdr *tcp = (void*)ip + sizeof(*ip);
                 if ((void*)tcp + sizeof(*tcp) <= data_end) {
-                    // AQUI MUDOU: Porta do NodePort (30080)
+                    
+                    // AQUI ESTÁ A MUDANÇA: Porta 30080
                     if (tcp->dest == ntohs(30080)) {
                         return XDP_DROP;
                     }
+                    
                 }
             }
         }
@@ -36,10 +38,13 @@ int xdp_drop_nodeport(struct xdp_md *ctx) {
 
 b = BPF(text=prog)
 fn = b.load_func("xdp_drop_nodeport", BPF.XDP)
+
 print(f"Protegendo Kubernetes NodePort 30080 na interface {device}...")
 b.attach_xdp(device, fn, 0)
 
 try:
-    b.trace_print()
+    while True:
+        time.sleep(1)
 except KeyboardInterrupt:
+    print("Removendo filtro...")
     b.remove_xdp(device, 0)
